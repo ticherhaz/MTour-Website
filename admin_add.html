@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Created ico -->
+    <link rel="shortcut icon" type="image/x-icon" href="image/logo.ico" />
+    
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- CustomFont CSS -->
+    <link rel="stylesheet" href="css/CustomFont.min.css">
+
+    <!-- CustomMain CSS -->
+    <link rel="stylesheet" href="css/CustomMain.css">
+
+    <!-- CustomSecond CSS -->
+    <link rel="stylesheet" href="css/CustomSecond.css">
+
+    <!-- Title -->
+    <title>MTour Admin</title>
+</head>
+
+<body style="background-color: rgb(231, 249, 255)">
+    <!-- [START] NAV [START] -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light navbar-custom">
+        <a class="navbar-brand" href="index.html">MTour Admin</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ">
+                    <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="admin.html" id="navLinkAdmin" hidden>Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="customer.html" id="navLinkCustomer" hidden>Customer</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="packages.html" id="navLinkPackages" hidden>Packages</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="transaction.html" id="navLinkTransaction" hidden>Transaction</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="livechat.html" id="navLinkLiveChat" hidden>Live Chat</a>
+                </li>
+            </ul>
+            <div class="nav-item ">
+                <a class="nav-link nav-link-custom-sign-out" href="index.html" id="navLinkSignOut" hidden>Sign Out</a>
+            </div>
+        </div>
+    </nav>
+    <!-- [END] NAV [END]-->
+
+    <!-- [START] TITLE PACKAGE [START] -->
+    <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark title-margin ">
+        <div class="col-md-6 px-0">
+            <h1 class="display-4 font-italic">Admin Add</h1>
+            <p class="lead my-3">Create new admin</p>
+        </div>
+    </div>
+    <!-- [END] TITLE PACKAGE [END] -->
+
+    <!-- [START] Insert Form [START] -->
+    <div class="wrapper" id="formAdminAdd">
+        <div class="inner" style="background-color: rgb(80, 147, 206)">
+            <div class="form">
+                <div class="form-wrapper">
+                    <input id="inputUsername" type="text" placeholder="Username" class="form-control-input">
+                    <i class="zmdi zmdi zmdi-email"></i>
+                </div>
+                <div class="form-wrapper">
+                    <input id="inputType" type="text" placeholder="Type" class="form-control-input">
+                    <i class="zmdi zmdi-lock"></i>
+                </div>
+                <div class="form-group container-login100-form-btn">
+                    <button id="btnInsert" type="submit"
+                        class="btn btn-primary btn-primary-custom button-register">Insert</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [END] Insert Form [END] -->
+
+
+
+
+    <!-- [START]----------------- CONSTANT -----------------  [START]-->
+    <!-- [START] Bootstrap Config [START]-->
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <!-- [END] Bootstrap Config [END]-->
+    <!-- [START] FIREBASE CONFIG [START]-->
+
+
+    <!-- When hosting apply these -->
+    <!-- <script src="/__/firebase/7.1.0/firebase.js"></script>
+    <script src="/__/firebase/7.1.0/firebase-app.js"></script>
+    <script src="/__/firebase/7.1.0/firebase-auth.js"></script>
+    <script src="/__/firebase/7.1.0/firebase-database.js"></script>
+    <script src="/__/firebase/7.1.0/firebase-messaging.js"></script>
+    <script src="/__/firebase/7.1.0/firebase-storage.js"></script>
+    <script src="/__/firebase/init.js"></script> -->
+
+
+    <!-- ----------------------------------------------------------------------------------------------- -->
+
+
+    <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-database.js"></script>
+    <script src="config/development.js"></script>
+
+
+    <!--[END] FIREBASE CONFIG [END] -->
+
+
+    <!-- [START] FUNCTION [START] -->
+    <script src="js/admin_add.js"></script>
+    <!-- [END] FUNCTION [END] -->
+    <noscript>Please enable JavaScript to continue using this application.</noscript>
+    <!-- [END]----------------- CONSTANT -----------------  [END]-->
+</body>
+
+</html>

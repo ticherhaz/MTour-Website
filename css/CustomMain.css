@@ -1,0 +1,154 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+
+/* 
+    Created on : Oct 4, 2019, 10:06:19 AM
+    Author     : Hazman
+*/
+
+/*[START] navbar-custom [START]*/
+
+.navbar-custom {
+    background-color: #5093CE;
+}
+
+/* change the brand and text color */
+
+.navbar-custom .navbar-brand, .navbar-custom .navbar-text {
+    color: rgb(255, 255, 255);
+}
+
+/* change the link color */
+
+.navbar-custom .navbar-nav .nav-link {
+    color: rgb(1, 9, 121);
+}
+
+/* change the color of active or hovered links */
+
+.navbar-custom .nav-item.active .nav-link, .navbar-custom .nav-item:focus .nav-link, .navbar-custom .nav-item:hover .nav-link {
+    color: rgb(0, 204, 255);
+}
+
+/*[END] navbar-custom [END]*/
+
+/*[START] btn-outline-success-custom [START]*/
+
+.btn-outline-success-custom {
+    color: rgb(9, 0, 131);
+    background-color: rgb(168, 235, 255);
+    border-color: #0011ff
+}
+
+.btn-outline-success-custom:hover {
+    background-color: rgb(72, 114, 192);
+    border-color: #00ffff
+}
+
+.btn-outline-success-custom.focus, .btn-outline-success-custom:focus {
+    box-shadow: 0 0 0 .2rem rgba(0, 153, 255, 0.5)
+}
+
+.btn-outline-success-custom.disabled, .btn-outline-success-custom:disabled {
+    color: #02005f;
+    background-color: transparent
+}
+
+.btn-outline-success-custom:not(:disabled):not(.disabled).active, .btn-outline-success-custom:not(:disabled):not(.disabled):active, .show>.btn-outline-success-custom.dropdown-toggle {
+    color: #fff;
+    background-color: #0059ff;
+    border-color: #000766
+}
+
+.btn-outline-success-custom:not(:disabled):not(.disabled).active:focus, .btn-outline-success-custom:not(:disabled):not(.disabled):active:focus, .show>.btn-outline-success-custom.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(182, 246, 255, 0.993);
+}
+
+/*[END] btn-outline-success-custom [END]*/
+
+/*[START] btn-primary-custom [START]*/
+
+.btn-primary-custom {
+    color: #fff;
+    background-color: #182e47;
+    border-color: #0e1720
+}
+
+.btn-primary-custom:hover {
+    color: #fff;
+    background-color: rgb(0, 44, 95);
+    border-color: rgb(83, 163, 255)
+}
+
+.btn-primary-custom.focus, .btn-primary-custom:focus {
+    box-shadow: 0 0 0 .2rem rgba(40, 96, 250, 0.795)
+}
+
+.btn-primary-custom.disabled, .btn-primary-custom:disabled {
+    color: #fff;
+    background-color: rgb(30, 154, 255);
+    border-color: rgb(0, 225, 255)
+}
+
+.btn-primary-custom:not(:disabled):not(.disabled).active, .btn-primary-custom:not(:disabled):not(.disabled):active, .show>.btn-primary-custom.dropdown-toggle {
+    color: #fff;
+    background-color: rgb(59, 122, 240);
+    border-color: rgb(0, 195, 255)
+}
+
+.btn-primary-custom:not(:disabled):not(.disabled).active:focus, .btn-primary-custom:not(:disabled):not(.disabled):active:focus, .show>.btn-primary-custom.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(124, 229, 255, 0.795)
+}
+
+/*[END] btn-primary-custom [END]*/
+
+/*[START] div-image-custom [START]*/
+
+.div-image-custom {
+    width: 200px;
+    height: 200px;
+    background: transparent;
+    margin: 0 auto;
+    margin-top: 21px;
+}
+
+.div-image-custom img.wide {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+}
+
+.div-image-custom img.tall {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+}
+
+/*[END] div-image-custom [END]*/
+
+/*[START] container-table [START]*/
+
+.container-table {
+    margin-top: -1%;
+}
+
+/*[END] container-table [END]*/
+
+/*[START] title-margin [START]*/
+
+.title-margin {
+    margin-top: 3%;
+}
+
+/*[END] title-margin [END]*/
+
+/*[START] nav-link-custom-sign-out [START]*/
+
+.nav-link-custom-sign-out {
+    color: #0e1720;
+}
+
+/*[END] nav-link-custom-sign-out [END]*/
