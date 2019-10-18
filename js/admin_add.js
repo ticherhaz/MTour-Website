@@ -1,8 +1,38 @@
 'use strict';
+
+//Initialize the Firebase
 var database = firebase.database();
-var timezone = new Date().getTimezoneOffset();
-var username = document.getElementById('insertUsername');
-var type = document.getElementById('insertType');
+
+//Get the date as ISO string
+var date = new Date().toISOString();
+
+/**
+ * 1. We linked them from admin_add.html to here as variables var.
+ * 2. While we linked them, we also get the value of the input. ".value"
+ * 3. After that, all the value from the html is transfered in here.
+ */
+var username = document.getElementById('inputUsername').value;
+var fullName = document.getElementById('inputFullName').value;
+var type = document.getElementById('inputType').value;
+var email = document.getElementById('inputEmail').value;
+var password = document.getElementById('inputPassword').value;
+var confirmPassword = document.getElementById('inputConfirmPassword').value;
+
+
+function btnInsertOnClick() {
+    if (username.length < 3) {
+        alert('Username is not good');
+        return;
+    }
+    if(fullName.length < 3){
+        alert('Full Name is not valid');
+        return;
+    }
+    if(type.length < 3){
+
+    }
+    checkInput();
+}
 
 function insertData() {
     writeNewPost("uid", username, "picture", type, timezone);
@@ -43,12 +73,9 @@ function btnSignOutOnClick() {
  * * out, and that is where we update the UI.
  */
 function initApp() {
-    // Listening for auth state changes.
     // [START authstatelistener]
     firebase.auth().onAuthStateChanged(function (user) {
-        // [START_EXCLUDE silent]
-        //document.getElementById('quickstart-verify-email').disabled = true;
-        // [END_EXCLUDE]
+
         if (user) {
             // User is signed in.
             var displayName = user.displayName;
@@ -66,23 +93,12 @@ function initApp() {
             document.getElementById('navLinkPackages').hidden = false;
             document.getElementById('navLinkTransaction').hidden = false;
             document.getElementById('navLinkLiveChat').hidden = false;
-            // // [START_EXCLUDE]
-            // document.getElementById('quickstart-sign-in').textContent = 'Sign out';
-            // document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
-            // if (!emailVerified) {
-            //     document.getElementById('quickstart-verify-email').disabled = false;
-            // }
-            // // [END_EXCLUDE]
         } else {
-            // User is signed out.
-            // // [START_EXCLUDE]
-            // document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
-            // document.getElementById('quickstart-sign-in').textContent = 'Sign in';
-            // document.getElementById('quickstart-account-details').textContent = 'null';
-            // // [END_EXCLUDE]
+            Console.log('User signed out');
         }
     });
+    // [END authstatelistener]
     document.getElementById('navLinkSignOut').addEventListener('click', btnSignOutOnClick, false);
-    document.getElementById('btnInsert').addEventListener('click', insertData, false);
+    document.getElementById('btnAdd').addEventListener('click', btnInsertOnClick, false);
 }
 initApp();
