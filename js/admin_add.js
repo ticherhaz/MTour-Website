@@ -1,32 +1,17 @@
 'use strict';
 
 /**
- * IMPORTANT
- * TODO:
+ * [IMPORTANT]
+ * [TODO]
  * 1. Since we just only have one button which is add admin,
  *    we put all the variables inside the method (function) btnInsertOnClick().
  */
 
-
 /**
- * 1. This is the method (function) when the button is click
+ * 1. This is the method (function) when the button is clicked.
  * 2. After that, it will triggered here.
  */
 function btnInsertOnClick() {
-    /**
-     * 1. Initialize the Realtime Database.
-     * 2. Now, we are linked with the Firebase.
-     * 3. database is usable and has property for Firebase.
-     */
-    var database = firebase.database();
-
-    /**
-     * 1. Get the value of date as ISO.
-     * 2. Want to convert to local at mobile version.
-     * 3. ISO is readable and get the UTC timezone.
-     */
-    var date = new Date().toISOString();
-
     /**
      * 1. We linked them from admin_add.html to here as variables var.
      * 2. While we linked them, we also get the value of the input. ".value"
@@ -61,7 +46,7 @@ function btnInsertOnClick() {
         alert('Password must length above 8 digits');
         return;
     }
-    if (!(password !== confirmPassword)) {
+    if (password !== confirmPassword) {
         alert('Password is not match, please try again');
         return;
     }
@@ -74,13 +59,13 @@ function btnInsertOnClick() {
 }
 
 /**
- * 1. This is method to create Firebase Auth using the property firebase.auth()
+ * 1. This is method to create Firebase Auth using the property firebase.auth().
  * 
- * @param {String} username 
- * @param {String} fullName 
- * @param {String} type 
- * @param {String} email 
- * @param {String} password 
+ * @param {String} username value from the inputUsername.
+ * @param {String} fullName value from the inputFullName.
+ * @param {String} type value from the inputType.
+ * @param {String} email value from the inputEmail.
+ * @param {String} password value from the inputPassword.
  */
 function createAuth(username, fullName, type, email, password) {
     /**
@@ -90,42 +75,57 @@ function createAuth(username, fullName, type, email, password) {
      */
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .catch(function (error) {
-            // Handle Errors here.
+            //Handle any errors here while creating user account.
             var errorCode = error.code;
             var errorMessage = error.message;
             alert('Error: ' + errorMessage + '\nError Code: ' + errorCode);
         });
 
     /**
-     * 1. After we success create account, we get the uid of the user
+     * 1. After we success create account, we get the uid of the user.
      * 2. We will store in the realtime database.
      */
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
-            //Get the userUid
+            //Get the userUid from the FirebaseAuth.
             var userUid = user.uid;
 
+            /**
+            * 1. Initialize the Realtime Database.
+            * 2. Now, we are linked with the Firebase.
+            * 3. database is usable and has property for Firebase.
+            */
+            var database = firebase.database();
 
-            //Next we will store in realtime database
-            registerNewAdmin(userUid, username, fullName, type, email, date);
+            /**
+             * 1. Get the value of date as ISO.
+             * 2. Want to convert to local at mobile version.
+             * 3. ISO is readable and get the UTC timezone.
+             */
+            var date = new Date().toISOString();
+
+            //Next we will store in realtime database.
+            registerNewAdmin(userUid, username, fullName, type, email, date, database);
             //After we update, we need to sign out this particular user.
-            firebase.auth().signOut();
+            //firebase.auth().signOut();
 
         }
     });
 }
 
 /**
+ * 1. We get value from method createAuth as parameters.
+ * 2. Ready to store data into Realtime Database.
  * 
- * @param {*} userUid = we get from the auth uid
- * @param {*} username = from the input
- * @param {*} fullName = from the input
- * @param {*} type = from the input
- * @param {*} email = from the input
- * @param {*} date = from new Date().toISOString() method
+ * @param {String} userUid value from the firebase auth.
+ * @param {String} username transfer value from method creathAuth.
+ * @param {String} fullName transfer value from method creathAuth.
+ * @param {String} type transfer value from method createAuth.
+ * @param {String} email transfer value from method createAuth.
+ * @param {String} date value from new Date().toISOString() method.
  */
-function registerNewAdmin(userUid, username, fullName, type, email, date) {
-    //Make entry for register new admin
+function registerNewAdmin(userUid, username, fullName, type, email, date, database) {
+    //Make entry to register new admin.
     var adminData = {
         userUid: userUid,
         username: username,
@@ -135,28 +135,40 @@ function registerNewAdmin(userUid, username, fullName, type, email, date) {
         date: date
     };
 
-    // Get a key for a new Post.
-    // var newPostKey = firebase.database().ref().child('zuh').push().key;
-
-    // Write the new post's data simultaneously in the posts list and the user's post list.
-    var updates;
-    // updates['/zuh/' + newPostKey] = postData;
+    /**
+     * 1. There are 2 ways to store the database.
+     *  1.1. We want to store only 1 root of data.
+     *  1.2. Or we want to store array for 2 roots of data.
+     *      1.1.1. Example to store array for 2 roots.
+     *                  var pushUid = database.push().key;
+     *                  var updates = {};
+     *                  updates['/firstRoot/' + pushUid ] = adminData;
+     *                  updates['/secondRoot/location' + pushUid ] = adminData;
+     *                  return database.update(uodates);
+     *      1.1.2. As you can see there are 2 variables of updates. Its an array.
+     *      1.1.3. So it store at 2 locations.
+     * 2. Right now, I want to store only at 1 location (root).
+     * 
+     */
+    var updates = {};
     updates['/adminA/' + userUid + '/'] = adminData;
-
-    return database.update(updates);
+    return database.ref().update(updates);
 }
 
+//-------------------------------[START] CONSTANST METHOD [START]--------------------------------------------
 
-//---------------------------------------------------------------------------------------
-
-//Method signOut
+/**
+ * 1. This method is called when the nav signout is clicked.
+ * 2. Once it clicked, the authStateChanged will listen and it will proceed to main menu.
+ */
 function btnSignOutOnClick() {
     firebase.auth().signOut();
 }
+
 /*
- * * initApp handles setting up UI event listeners and registering Firebase auth listeners:
- * * - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
- * * out, and that is where we update the UI.
+ * 1. initApp handles setting up UI event listeners and registering Firebase auth listeners:
+ * - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
+ * out, and that is where we update the UI.
  */
 function initApp() {
     // [START authstatelistener]
@@ -187,8 +199,14 @@ function initApp() {
     document.getElementById('navLinkSignOut').addEventListener('click', btnSignOutOnClick, false);
     document.getElementById('btnAdd').addEventListener('click', btnInsertOnClick, false);
 }
+
 /**
- * 1. This functions called once this file is called at the html.
+ * 1. Usage of window.onLoad means that, after html completed their display, id, etc...
+ * the window.onLoad will triggered after that.
+ * 1. This functions initApp() called once this file is called at the html.
  * 2. It will go trigger this first as the early function.
  */
-initApp();
+window.onload = function () {
+    initApp();
+}
+//-------------------------------[END] CONSTANST METHOD [END]--------------------------------------------
