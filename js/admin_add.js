@@ -144,7 +144,7 @@ function registerNewAdmin(userUid, username, fullName, type, email, date, databa
      *                  var updates = {};
      *                  updates['/firstRoot/' + pushUid ] = adminData;
      *                  updates['/secondRoot/location' + pushUid ] = adminData;
-     *                  return database.update(uodates);
+     *                  return database.ref().update(uodates);
      *      1.1.2. As you can see there are 2 variables of updates. Its an array.
      *      1.1.3. So it store at 2 locations.
      * 2. Right now, I want to store only at 1 location (root).
@@ -152,7 +152,7 @@ function registerNewAdmin(userUid, username, fullName, type, email, date, databa
      */
     var updates = {};
     updates['/adminA/' + userUid + '/'] = adminData;
-    return database.ref().update(updates);
+    return database.ref().set(updates);
 }
 
 //-------------------------------[START] CONSTANST METHOD [START]--------------------------------------------
