@@ -5,6 +5,8 @@
  * [TODO]
  * 1. Since we just only have one button which is add admin,
  *    we put all the variables inside the method (function) btnInsertOnClick().
+ * 2. Flow of this js is, when admin store all the data of new admin, actually it
+ *    will save in the child 'adminPending' only, store with the password.
  */
 
 /**
@@ -21,10 +23,11 @@ function btnInsertOnClick() {
     var fullName = document.getElementById('inputFullName').value;
     var type = document.getElementById('inputType').value;
     var email = document.getElementById('inputEmail').value;
+    var numberPhone = document.getElementById('inputNumberPhone').value;
     var password = document.getElementById('inputPassword').value;
     var confirmPassword = document.getElementById('inputConfirmPassword').value;
     /**
-     * 1. We validate the inputs and the password is match or not
+     * 1. We validate the inputs and the password is match or not.
      */
     if (username.length < 3) {
         alert('Username is not valid');
@@ -42,75 +45,57 @@ function btnInsertOnClick() {
         alert('Email is not valid');
         return;
     }
+    if (numberPhone.length < 10) {
+        alert('Number Phone is not valid');
+        return;
+    }
     if (password.length < 8) {
         alert('Password must length above 8 digits');
         return;
     }
     if (password !== confirmPassword) {
-        alert('Password is not match, please try again');
+        alert('Password is not matched, please try again');
         return;
     }
-    /**
-     * 1. After all the inputs are valid, we proceed to create the auth
-     *     using the firebaseAuth.
-     * 2. All the parameters will get here and set at function creatAuth.
-     */
-    createAuth(username, fullName, type, email, password);
-}
-
-/**
- * 1. This is method to create Firebase Auth using the property firebase.auth().
- * 
- * @param {String} username value from the inputUsername.
- * @param {String} fullName value from the inputFullName.
- * @param {String} type value from the inputType.
- * @param {String} email value from the inputEmail.
- * @param {String} password value from the inputPassword.
- */
-function createAuth(username, fullName, type, email, password) {
-    /**
-     * 1. This is a firebase auth, we just need to call class 'firebase'.
-     * 2. It will proceed to create the account auth at firebase cloud.
-     * 
-     */
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-        .catch(function (error) {
-            //Handle any errors here while creating user account.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            alert('Error: ' + errorMessage + '\nError Code: ' + errorCode);
-        });
 
     /**
-     * 1. After we success create account, we get the uid of the user.
-     * 2. We will store in the realtime database.
+     * 1. Initialize the Realtime Database.
+     * 2. Now, we are linked with the Firebase.
+     * 3. database is usable and has property for Firebase.
      */
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            //Get the userUid from the FirebaseAuth.
-            var userUid = user.uid;
+    var database = firebase.database();
 
-            /**
-            * 1. Initialize the Realtime Database.
-            * 2. Now, we are linked with the Firebase.
-            * 3. database is usable and has property for Firebase.
-            */
-            var database = firebase.database();
+    /**
+     * 1. Create the pushUid for this particular admin
+     *    as adminPendingUid.
+     */
+    var adminPendingUid = database.ref().push().key;
 
-            /**
-             * 1. Get the value of date as ISO.
-             * 2. Want to convert to local at mobile version.
-             * 3. ISO is readable and get the UTC timezone.
-             */
-            var date = new Date().toISOString();
+    /**
+     * 1. Get the value of date as ISO.
+     * 2. Want to convert to local at mobile version.
+     * 3. ISO is readable and get the UTC timezone.
+     */
+    var date = new Date().toISOString();
 
-            //Next we will store in realtime database.
-            registerNewAdmin(userUid, username, fullName, type, email, date, database);
-            //After we update, we need to sign out this particular user.
-            //firebase.auth().signOut();
+    /**
+     * 1. After all the inputs are valid, we proceed to store the adminPending.
+     * 2. All the parameters will get here and later just store only.
+     */
+    storeAdminPending(adminPendingUid, username, fullName, type, email, numberPhone, password, date, database);
 
-        }
-    });
+    /**
+     * 1. After we success store the adminPending in the Realtime Database,
+     *    we will display alert and clear the input.
+     */
+    alert('Success create account for admin ' + username);
+    username = '';
+    fullName = '';
+    type = '';
+    email = '';
+    numberPhone = '';
+    password = '';
+    confirmPassword = '';
 }
 
 /**
@@ -124,15 +109,18 @@ function createAuth(username, fullName, type, email, password) {
  * @param {String} email transfer value from method createAuth.
  * @param {String} date value from new Date().toISOString() method.
  */
-function registerNewAdmin(userUid, username, fullName, type, email, date, database) {
+function storeAdminPending(adminPendingUid, username, fullName, type, email, numberPhone, password, date, database) {
     //Make entry to register new admin.
-    var adminData = {
-        userUid: userUid,
+    var adminPendingUidData = {
+        uid: adminPendingUid,
         username: username,
         fullName: fullName,
         type: type,
         email: email,
-        date: date
+        numberPhone: numberPhone,
+        password: password,
+        online: false,
+        onCreatedDate: date
     };
 
     /**
@@ -140,19 +128,17 @@ function registerNewAdmin(userUid, username, fullName, type, email, date, databa
      *  1.1. We want to store only 1 root of data.
      *  1.2. Or we want to store array for 2 roots of data.
      *      1.1.1. Example to store array for 2 roots.
-     *                  var pushUid = database.push().key;
+     *                  var pushUid = database.ref().push().key;
      *                  var updates = {};
      *                  updates['/firstRoot/' + pushUid ] = adminData;
      *                  updates['/secondRoot/location' + pushUid ] = adminData;
      *                  return database.ref().update(uodates);
      *      1.1.2. As you can see there are 2 variables of updates. Its an array.
      *      1.1.3. So it store at 2 locations.
-     * 2. Right now, I want to store only at 1 location (root).
+     * 2. Right now, I want to store only at 1 location (root). We are using set instead update.
      * 
      */
-    var updates = {};
-    updates['/adminA/' + userUid + '/'] = adminData;
-    return database.ref().set(updates);
+    return database.ref().child('adminPending').child(adminPendingUid).set(adminPendingUidData);
 }
 
 //-------------------------------[START] CONSTANST METHOD [START]--------------------------------------------
@@ -175,22 +161,45 @@ function initApp() {
     firebase.auth().onAuthStateChanged(function (user) {
 
         if (user) {
-            // User is signed in.
-            var displayName = user.displayName;
-            var email = user.email;
-            var emailVerified = user.emailVerified;
-            var photoURL = user.photoURL;
-            var isAnonymous = user.isAnonymous;
+            //User is signed in.
             var uid = user.uid;
-            var providerData = user.providerData;
 
-            //Display all the nav link when user is logging and display navlinksignout
-            document.getElementById('navLinkSignOut').hidden = false;
-            document.getElementById('navLinkAdmin').hidden = false;
-            document.getElementById('navLinkCustomer').hidden = false;
-            document.getElementById('navLinkPackages').hidden = false;
-            document.getElementById('navLinkTransaction').hidden = false;
-            document.getElementById('navLinkLiveChat').hidden = false;
+            /**
+             * 1. We want to get the type of admin and display accordingly.
+             * 2. First, we initialize the Firebase Realtime Database.
+             * 3. Next, we retrieve the value from the database.
+             * 4. const type will get the value type.
+             * 5. Once we get the type, we will check them by lists of type of admin.
+             * 6. Type = {'Owner' , 'Customer', 'Packages', 'Live Chat', 'Transaction', 'Profit Report'};
+             * 7. After that, we only display nav top bar according to the type of admin.
+             */
+            var database = firebase.database();
+            database.ref('admin/' + uid + '/').on('value', function (snapshot) {
+                //Get the value of type and store in var type.
+                const type = snapshot.val().type;
+
+                //Checking the type
+                if (type === "Owner") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkAdmin').hidden = false;
+                    document.getElementById('navLinkCustomer').hidden = false;
+                    document.getElementById('navLinkPackages').hidden = false;
+                    document.getElementById('navLinkTransaction').hidden = false;
+                    document.getElementById('navLinkLiveChat').hidden = false;
+                } else if (type === "Customer") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkCustomer').hidden = false;
+                } else if (type === "Packages") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkPackages').hidden = false;
+                } else if (type === "Live Chat") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkLiveChat').hidden = false;
+                } else if (type === "Transaction") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkTransaction').hidden = false;
+                }
+            });
         } else {
             Console.log('User signed out');
         }
@@ -202,7 +211,7 @@ function initApp() {
 
 /**
  * 1. Usage of window.onLoad means that, after html completed their display, id, etc...
- * the window.onLoad will triggered after that.
+ *    the window.onLoad will triggered after that.
  * 1. This functions initApp() called once this file is called at the html.
  * 2. It will go trigger this first as the early function.
  */
