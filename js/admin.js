@@ -2,6 +2,20 @@
 var database = firebase.database();
 var timezone = new Date().getTimezoneOffset();
 
+// function btnTableDataUidOnClick() {
+//     var valueTableData = document.getElementById('tableDataUid').value;
+
+//     alert('Table Uid Clicked: ' + valueTableData);
+// }
+
+function btnEditOnClick(value) {
+    //var newValue = document.getElementById('tdUid').innerHTML;
+    var adminUid = value.innerText;
+    localStorage.setItem("adminUid", adminUid);
+    alert(adminUid);
+    // window.location = "admin_edit.html";
+}
+
 function displayTableAdmin() {
     database.ref('admin').once('value', function (snapshot) {
         if (snapshot.exists()) {
@@ -15,7 +29,8 @@ function displayTableAdmin() {
                 '<th>Email</th>' +
                 '<th>Type</th>' +
                 '<th>Created Date</th>' +
-                '<th>Online</th>';
+                '<th>Online</th>' +
+                '<th>Edit</th>';
             snapshot.forEach(function (childSnapshot) {
                 //Get the value
                 var val = childSnapshot.val();
@@ -27,7 +42,7 @@ function displayTableAdmin() {
 
                 content += '<tr>';
                 content += '<td><div class="div-image-custom"><img src="' + profileUrlFinale + '"/></div></td>';
-                content += '<td>' + val.uid + '</td>';
+                content += '<td id="tdUid">' + val.uid + '</td>';
                 content += '<td>' + val.fullName + '</td>';
                 content += '<td>' + val.username + '</td>';
                 content += '<td>' + val.numberPhone + '</td>';
@@ -35,10 +50,14 @@ function displayTableAdmin() {
                 content += '<td>' + val.type + '</td>';
                 content += '<td>' + onCreatedDateFinale.toLocaleDateString("en-US") + '</td>';
                 content += '<td>' + val.isOnline + '</td>';
+                content += '<td><button  onclick="btnEditOnClick(this)"  type="button" value="' + val.uid + '">Edit</button></td>';
                 content += '</tr>';
+
             });
-            //Display at package.html
+            //Display at admin.html
             tablePackages.innerHTML = content;
+            //document.getElementById('tableDataUid').addEventListener('click', btnTableDataUidOnClick, false);
+
         }
     });
 }
@@ -60,52 +79,82 @@ function getProfilePicUrl(profileUrl) {
 function btnSignOutOnClick() {
     firebase.auth().signOut();
 }
+
+//-------------------------------[START] CONSTANST METHOD [START]--------------------------------------------
+
+/**
+ * 1. This method is called when the nav signout is clicked.
+ * 2. Once it clicked, the authStateChanged will listen and it will proceed to main menu.
+ */
+function btnSignOutOnClick() {
+    firebase.auth().signOut();
+}
+
 /*
- * * initApp handles setting up UI event listeners and registering Firebase auth listeners:
- * * - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
- * * out, and that is where we update the UI.
-*/
+ * 1. initApp handles setting up UI event listeners and registering Firebase auth listeners:
+ * - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
+ * out, and that is where we update the UI.
+ */
 function initApp() {
-    // Listening for auth state changes.
     // [START authstatelistener]
     firebase.auth().onAuthStateChanged(function (user) {
-        // [START_EXCLUDE silent]
-        //document.getElementById('quickstart-verify-email').disabled = true;
-        // [END_EXCLUDE]
-        if (user) {
-            // User is signed in.
-            var displayName = user.displayName;
-            var email = user.email;
-            var emailVerified = user.emailVerified;
-            var photoURL = user.photoURL;
-            var isAnonymous = user.isAnonymous;
-            var uid = user.uid;
-            var providerData = user.providerData;
 
-            //Display all the nav link when user is logging and display navlinksignout
-            document.getElementById('navLinkSignOut').hidden = false;
-            document.getElementById('navLinkAdmin').hidden = false;
-            document.getElementById('navLinkCustomer').hidden = false;
-            document.getElementById('navLinkPackages').hidden = false;
-            document.getElementById('navLinkTransaction').hidden = false;
-            document.getElementById('navLinkLiveChat').hidden = false;
-            // // [START_EXCLUDE]
-            // document.getElementById('quickstart-sign-in').textContent = 'Sign out';
-            // document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
-            // if (!emailVerified) {
-            //     document.getElementById('quickstart-verify-email').disabled = false;
-            // }
-            // // [END_EXCLUDE]
+        if (user) {
+            //User is signed in.
+            var uid = user.uid;
+
+            /**
+             * 1. We want to get the type of admin and display accordingly.
+             * 2. First, we initialize the Firebase Realtime Database.
+             * 3. Next, we retrieve the value from the database.
+             * 4. const type will get the value type.
+             * 5. Once we get the type, we will check them by lists of type of admin.
+             * 6. Type = {'Owner' , 'Customer', 'Packages', 'Live Chat', 'Transaction', 'Profit Report'};
+             * 7. After that, we only display nav top bar according to the type of admin.
+             */
+            var database = firebase.database();
+            database.ref('admin/' + uid + '/').on('value', function (snapshot) {
+                //Get the value of type and store in var type.
+                const type = snapshot.val().type;
+
+             //Checking the type
+             if (type === "Owner") {
+                document.getElementById('navLinkSignOut').hidden = false;
+                document.getElementById('navLinkAdmin').hidden = false;
+                document.getElementById('navLinkCustomer').hidden = false;
+                document.getElementById('navLinkPackages').hidden = false;
+                document.getElementById('navLinkTransaction').hidden = false;
+                document.getElementById('navLinkProfitReport').hidden = false;
+            } else if (type === "Customer") {
+                document.getElementById('navLinkSignOut').hidden = false;
+                document.getElementById('navLinkCustomer').hidden = false;
+            } else if (type === "Packages") {
+                document.getElementById('navLinkSignOut').hidden = false;
+                document.getElementById('navLinkPackages').hidden = false;
+            } else if (type === "Profit Report") {
+                document.getElementById('navLinkSignOut').hidden = false;
+                document.getElementById('navLinkProfitReport').hidden = false;
+            } else if (type === "Transaction") {
+                document.getElementById('navLinkSignOut').hidden = false;
+                document.getElementById('navLinkTransaction').hidden = false;
+            }
+            });
         } else {
-            // User is signed out.
-            // // [START_EXCLUDE]
-            // document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
-            // document.getElementById('quickstart-sign-in').textContent = 'Sign in';
-            // document.getElementById('quickstart-account-details').textContent = 'null';
-            // // [END_EXCLUDE]
+            Console.log('User signed out');
         }
     });
+    // [END authstatelistener]
     document.getElementById('navLinkSignOut').addEventListener('click', btnSignOutOnClick, false);
 }
-initApp();
-displayTableAdmin();
+
+/**
+ * 1. Usage of window.onLoad means that, after html completed their display, id, etc...
+ *    the window.onLoad will triggered after that.
+ * 1. This functions initApp() called once this file is called at the html.
+ * 2. It will go trigger this first as the early function.
+ */
+window.onload = function () {
+    initApp();
+    displayTableAdmin();
+}
+//-------------------------------[END] CONSTANST METHOD [END]--------------------------------------------

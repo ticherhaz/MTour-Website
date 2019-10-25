@@ -10,6 +10,17 @@
  */
 
 /**
+ * 1. Get the value adminUid from the localStorage
+ */
+var adminUid = localStorage.getItem("adminUid");
+
+function setDivAdminUid() {
+    
+    //Display Information of the admin
+    document.getElementById('divAdminUid').innerHTML = adminUid;
+}
+
+/**
  * 1. This is the method (function) when the button is clicked.
  * 2. After that, it will triggered here.
  */
@@ -207,6 +218,7 @@ function initApp() {
     // [END authstatelistener]
     document.getElementById('navLinkSignOut').addEventListener('click', btnSignOutOnClick, false);
     document.getElementById('btnAdd').addEventListener('click', btnInsertOnClick, false);
+    setDivAdminUid();
 }
 
 /**

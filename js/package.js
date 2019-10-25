@@ -19,15 +19,30 @@ function displayTablePackages() {
             snapshot.forEach(function (childSnapshot) {
                 //Get the value
                 var val = childSnapshot.val();
+
+                var onCreatedDate = val.date;
+                var onCreatedDateFinale = new Date(onCreatedDate);
+                onCreatedDateFinale = new Date(onCreatedDateFinale.getTime() + (onCreatedDateFinale.getTimezoneOffset() * 60000));
+
+                var dateStartPromotion = val.dateStartPromotion;
+                var dateStartPromotionFinale = new Date(dateStartPromotion);
+                dateStartPromotionFinale = new Date(dateStartPromotionFinale.getTime() + (dateStartPromotionFinale.getTimezoneOffset() * 60000));
+
+                var dateFinishPromotion = val.dateFinishPromotion;
+                var dateFinishPromotionFinale = new Date(dateFinishPromotion);
+                dateFinishPromotionFinale = new Date(dateFinishPromotionFinale.getTime() + (dateFinishPromotionFinale.getTimezoneOffset() * 60000));
+
+
+
                 content += '<tr>';
                 content += '<td><div class="div-image-custom"><img src="' + val.imageUrl + '"/></div></td>';
                 content += '<td>' + val.name + '</td>';
                 content += '<td>' + val.shortDetail + '</td>';
                 content += '<td>' + val.place + '</td>';
                 content += '<td>' + val.price + '</td>';
-                content += '<td>' + val.date + '</td>';
-                content += '<td>' + val.dateStartPromotion + '</td>';
-                content += '<td>' + val.dateFinishPromotion + '</td>';
+                content += '<td>' + onCreatedDateFinale.toLocaleDateString("en-US") + '</td>';
+                content += '<td>' + dateStartPromotionFinale.toLocaleDateString("en-US") + '</td>';
+                content += '<td>' + dateFinishPromotionFinale.toLocaleDateString("en-US") + '</td>';
                 content += '<td>' + val.promotion + '</td>';
                 content += '</tr>';
             });
@@ -47,7 +62,7 @@ function btnSignOutOnClick() {
  * * initApp handles setting up UI event listeners and registering Firebase auth listeners:
  * * - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
  * * out, and that is where we update the UI.
-*/
+ */
 function initApp() {
     // Listening for auth state changes.
     // [START authstatelistener]

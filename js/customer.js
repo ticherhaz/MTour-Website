@@ -1,5 +1,6 @@
 'use strict';
 var database = firebase.database();
+var timezone = new Date().getTimezoneOffset();
 
 function displayTableAdmin() {
     database.ref('user').once('value', function (snapshot) {
@@ -19,6 +20,18 @@ function displayTableAdmin() {
                 var val = childSnapshot.val();
                 const profileUrl = getProfilePicUrl(val.profileUrl);
                 const profileUrlFinale = addSizeToGoogleProfilePic(profileUrl);
+
+
+                var onCreatedDate = val.onCreatedDate;
+                var onCreatedDateFinale = new Date(onCreatedDate);
+                onCreatedDateFinale = new Date(onCreatedDateFinale.getTime() + (onCreatedDateFinale.getTimezoneOffset() * 60000));
+
+                var isCustomerServicing = val.isCustomerServicing;
+                if (isCustomerServicing === undefined)
+                    isCustomerServicing = "No";
+                else isCustomerServicing = "Yes";
+            
+
                 content += '<tr>';
                 content += '<td><div class="div-image-custom"><img src="' + profileUrlFinale + '"/></div></td>';
                 content += '<td>' + val.profileUrlName + '</td>';
@@ -26,8 +39,8 @@ function displayTableAdmin() {
                 content += '<td>' + val.username + '</td>';
                 content += '<td>' + val.email + '</td>';
                 content += '<td>' + val.numberPhone + '</td>';
-                content += '<td>' + val.onCreatedDate + '</td>';
-                content += '<td>' + val.isCustomerServicing + '</td>';
+                content += '<td>' + onCreatedDateFinale.toLocaleDateString("en-US") + '</td>';
+                content += '<td>' + isCustomerServicing + '</td>';
                 content += '</tr>';
             });
             //Display at package.html
@@ -57,7 +70,7 @@ function btnSignOutOnClick() {
  * * initApp handles setting up UI event listeners and registering Firebase auth listeners:
  * * - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
  * * out, and that is where we update the UI.
-*/
+ */
 function initApp() {
     // Listening for auth state changes.
     // [START authstatelistener]

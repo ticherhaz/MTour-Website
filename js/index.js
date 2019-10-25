@@ -1,12 +1,15 @@
 'use strict';
 
-//Method onBtnSignInClick
+/**
+ * 1. This method will be triggered when admin click the button sign in.
+ */
 function btnSignInOnClick() {
     //Get value from html (index.html)
     var inputEmail = document.getElementById('inputEmail').value;
     var inputPassword = document.getElementById('inputPassword').value;
     var btnSignIn = document.getElementById('btnSignIn');
 
+    //Checking the length input if it valid or not
     if (inputEmail.length < 4) {
         alert('Please enter an email address.');
         return;
@@ -15,6 +18,7 @@ function btnSignInOnClick() {
         alert('Please enter a password.');
         return;
     }
+
     // Sign in with email and pass.
     // [START authwithemail]
     firebase.auth().signInWithEmailAndPassword(inputEmail, inputPassword)
@@ -25,13 +29,11 @@ function btnSignInOnClick() {
             var errorMessage = error.message;
             // [START_EXCLUDE]
             if (errorCode === 'auth/wrong-password') {
-
                 alert('Wrong password.');
             } else {
                 alert(errorMessage);
             }
             console.log(error);
-            //document.getElementById('quickstart-sign-in').disabled = false;
             // [END_EXCLUDE]
         });
     btnSignIn.disabled = true;
@@ -73,13 +75,7 @@ function initApp() {
 
         if (user) {
             //User is signed in.
-            var displayName = user.displayName;
-            var email = user.email;
-            var emailVerified = user.emailVerified;
-            var photoURL = user.photoURL;
-            var isAnonymous = user.isAnonymous;
             var uid = user.uid;
-            var providerData = user.providerData;
 
             /**
              * 1. We want to get the type of admin and display accordingly.
@@ -102,16 +98,16 @@ function initApp() {
                     document.getElementById('navLinkCustomer').hidden = false;
                     document.getElementById('navLinkPackages').hidden = false;
                     document.getElementById('navLinkTransaction').hidden = false;
-                    document.getElementById('navLinkLiveChat').hidden = false;
+                    document.getElementById('navLinkProfitReport').hidden = false;
                 } else if (type === "Customer") {
                     document.getElementById('navLinkSignOut').hidden = false;
                     document.getElementById('navLinkCustomer').hidden = false;
                 } else if (type === "Packages") {
                     document.getElementById('navLinkSignOut').hidden = false;
                     document.getElementById('navLinkPackages').hidden = false;
-                } else if (type === "Live Chat") {
+                } else if (type === "Profit Report") {
                     document.getElementById('navLinkSignOut').hidden = false;
-                    document.getElementById('navLinkLiveChat').hidden = false;
+                    document.getElementById('navLinkProfitReport').hidden = false;
                 } else if (type === "Transaction") {
                     document.getElementById('navLinkSignOut').hidden = false;
                     document.getElementById('navLinkTransaction').hidden = false;

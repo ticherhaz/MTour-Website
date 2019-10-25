@@ -1,35 +1,39 @@
 'use strict';
 var database = firebase.database();
+var timezone = new Date().getTimezoneOffset();
 
-function displayTableAdmin() {
+function displayTableTransaction() {
     database.ref('transaction').once('value', function (snapshot) {
         if (snapshot.exists()) {
             var tablePackages = document.getElementById('tableTransaction');
             var content =
+                '<th>Package</th>' +
                 '<th>Transaction Uid</th>' +
-                '<th>Admin ID</th>' +
-                '<th>Full Name</th>' +
-                '<th>Username</th>' +
-                '<th>Number Phone</th>' +
-                '<th>Email</th>' +
-                '<th>Type</th>' +
-                '<th>Created Date</th>' +
-                '<th>Online</th>';
+                '<th>Package Uid</th>' +
+                '<th>Customer Uid</th>' +
+                '<th>Package Name</th>' +
+                '<th>Price</th>' +
+                '<th>Quantity</th>' +
+                '<th>Date</th>';
             snapshot.forEach(function (childSnapshot) {
                 //Get the value
                 var val = childSnapshot.val();
-                const profileUrl = getProfilePicUrl(val.profileUrl);
-                const profileUrlFinale = addSizeToGoogleProfilePic(profileUrl);
+                const packageUrl = getProfilePicUrl(val.imageUrl);
+                const packageUrlFinale = addSizeToGoogleProfilePic(packageUrl);
+
+                var onCreatedDate = val.time;
+                var onCreatedDateFinale = new Date(onCreatedDate);
+                onCreatedDateFinale = new Date(onCreatedDateFinale.getTime() + (onCreatedDateFinale.getTimezoneOffset() * 60000));
+
                 content += '<tr>';
-                content += '<td><div class="div-image-custom"><img src="' + profileUrlFinale + '"/></div></td>';
+                content += '<td><div class="div-image-custom"><img src="' + packageUrlFinale + '"/></div></td>';
+                content += '<td>' + val.pushid + '</td>';
+                content += '<td>' + val.packageid + '</td>';
                 content += '<td>' + val.uid + '</td>';
-                content += '<td>' + val.fullName + '</td>';
-                content += '<td>' + val.username + '</td>';
-                content += '<td>' + val.numberPhone + '</td>';
-                content += '<td>' + val.email + '</td>';
-                content += '<td>' + val.type + '</td>';
-                content += '<td>' + val.onCreatedDate + '</td>';
-                content += '<td>' + val.isOnline + '</td>';
+                content += '<td>' + val.packagePlace + '</td>';
+                content += '<td>' + val.price + '</td>';
+                content += '<td>' + val.quantity + '</td>';
+                content += '<td>' + onCreatedDateFinale.toLocaleDateString("en-US") + '</td>';
                 content += '</tr>';
             });
             //Display at package.html
@@ -59,7 +63,7 @@ function btnSignOutOnClick() {
  * * initApp handles setting up UI event listeners and registering Firebase auth listeners:
  * * - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
  * * out, and that is where we update the UI.
-*/
+ */
 function initApp() {
     // Listening for auth state changes.
     // [START authstatelistener]
@@ -103,4 +107,4 @@ function initApp() {
     document.getElementById('navLinkSignOut').addEventListener('click', btnSignOutOnClick, false);
 }
 initApp();
-displayTableAdmin();
+displayTableTransaction();
