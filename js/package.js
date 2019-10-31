@@ -7,11 +7,14 @@ function displayTablePackages() {
             var tablePackages = document.getElementById('tablePackages');
             var content =
                 '<th>Image</th>' +
+                '<th>Category</th>' +
                 '<th>Name</th>' +
-                '<th>Short Detail</th>' +
                 '<th>Place</th>' +
-                '<th>Price</th>' +
-                '<th>Date</th>' +
+                '<th>State</th>' +
+                '<th>Short Detail</th>' +
+                '<th>Price (RM)</th>' +
+                '<th>Final Cost (RM)</th>' +
+                '<th>Date Created</th>' +
                 '<th>Start Promotion</th>' +
                 '<th>End Promotion</th>' +
                 '<th>Promotion</th>';
@@ -20,30 +23,58 @@ function displayTablePackages() {
                 //Get the value
                 var val = childSnapshot.val();
 
+                var imageUrl = val.imageUrl;
+                var category = val.category;
+                var name = val.name;
+                var place = val.place;
+                var state = val.state;
+                var shortDetail = val.shortDetail;
+                var price = val.price.toFixed(2);
+                var finalCost = val.finalCost.toFixed(2);
+
+
                 var onCreatedDate = val.date;
                 var onCreatedDateFinale = new Date(onCreatedDate);
                 onCreatedDateFinale = new Date(onCreatedDateFinale.getTime() + (onCreatedDateFinale.getTimezoneOffset() * 60000));
 
                 var dateStartPromotion = val.dateStartPromotion;
-                var dateStartPromotionFinale = new Date(dateStartPromotion);
-                dateStartPromotionFinale = new Date(dateStartPromotionFinale.getTime() + (dateStartPromotionFinale.getTimezoneOffset() * 60000));
-
+                var dateStartPromotionFinale;
+             
                 var dateFinishPromotion = val.dateFinishPromotion;
-                var dateFinishPromotionFinale = new Date(dateFinishPromotion);
-                dateFinishPromotionFinale = new Date(dateFinishPromotionFinale.getTime() + (dateFinishPromotionFinale.getTimezoneOffset() * 60000));
+                var dateFinishPromotionFinale;
+                
 
+                var promotion = val.promotion;
+                if (promotion) {
+                    promotion = "Yes";
 
+                    dateStartPromotionFinale = new Date(dateStartPromotion);
+                    dateStartPromotionFinale = new Date(dateStartPromotionFinale.getTime() + (dateStartPromotionFinale.getTimezoneOffset() * 60000));
+
+                    dateFinishPromotionFinale = new Date(dateFinishPromotion);
+                    dateFinishPromotionFinale = new Date(dateFinishPromotionFinale.getTime() + (dateFinishPromotionFinale.getTimezoneOffset() * 60000));
+
+                    dateStartPromotionFinale = dateStartPromotionFinale.toLocaleDateString("en-US");
+                    dateFinishPromotionFinale = dateFinishPromotionFinale.toLocaleDateString("en-US");
+                } else {
+                    promotion = "No";
+                    dateStartPromotionFinale = "No Start Promotion";
+                    dateFinishPromotionFinale = "No Finish Promotion";
+                }
 
                 content += '<tr>';
-                content += '<td><div class="div-image-custom"><img src="' + val.imageUrl + '"/></div></td>';
-                content += '<td>' + val.name + '</td>';
-                content += '<td>' + val.shortDetail + '</td>';
-                content += '<td>' + val.place + '</td>';
-                content += '<td>' + val.price + '</td>';
+                content += '<td><div class="div-image-custom"><img src="' + imageUrl + '"/></div></td>';
+                content += '<td>' + category + '</td>';
+                content += '<td>' + name + '</td>';
+                content += '<td>' + place + '</td>';
+                content += '<td>' + state + '</td>';
+                content += '<td>' + shortDetail + '</td>';
+                content += '<td>' + price + '</td>';
+                content += '<td>' + finalCost + '</td>';
                 content += '<td>' + onCreatedDateFinale.toLocaleDateString("en-US") + '</td>';
-                content += '<td>' + dateStartPromotionFinale.toLocaleDateString("en-US") + '</td>';
-                content += '<td>' + dateFinishPromotionFinale.toLocaleDateString("en-US") + '</td>';
-                content += '<td>' + val.promotion + '</td>';
+                content += '<td>' + dateStartPromotionFinale + '</td>';
+                content += '<td>' + dateFinishPromotionFinale + '</td>';
+                content += '<td>' + promotion + '</td>';
                 content += '</tr>';
             });
             //Display at package.html

@@ -7,33 +7,56 @@ function displayTableTransaction() {
         if (snapshot.exists()) {
             var tablePackages = document.getElementById('tableProfitReport');
             var content =
-                '<th>Package</th>' +
-                '<th>Transaction Uid</th>' +
-                '<th>Package Uid</th>' +
-                '<th>Customer Uid</th>' +
+                '<th>Package Image</th>' +
                 '<th>Package Name</th>' +
-                '<th>Price</th>' +
-                '<th>Quantity</th>' +
-                '<th>Date</th>';
+                '<th>Username</th>' +
+                '<th>User Profile</th>' +
+                '<th>Price (RM)</th>' +
+                '<th>Cost Activity (RM)</th>' +
+                '<th>Cost Hotel (RM)</th>' +
+                '<th>Cost Tour Guide (RM)</th>' +
+                '<th>Service Tax (RM)</th>' +
+                '<th>Service Charges (RM)</th>' +
+                '<th>Final Cost (RM)</th>' +
+                '<th>On Date Purchased (RM)</th>';
             snapshot.forEach(function (childSnapshot) {
                 //Get the value
                 var val = childSnapshot.val();
-                const packageUrl = getProfilePicUrl(val.imageUrl);
+                const packageName = val.packageName;
+                const userName = val.userName;
+
+                const price = val.price;
+                const costActivity = val.costActivity;
+                const costHotel = val.costHotel;
+                const costTourGuide = val.costTourGuide;
+                const serviceTax = val.serviceTax;
+                const serviceCharges = val.serviceCharges;
+                const finalCost = val.finalCost;
+
+                const packageUrl = getProfilePicUrl(val.packageImageUrl);
                 const packageUrlFinale = addSizeToGoogleProfilePic(packageUrl);
 
-                var onCreatedDate = val.time;
+                const userProfileUrl = getProfilePicUrl(val.userProfileUrl);
+                const userProfileUrlFinale = addSizeToGoogleProfilePic(userProfileUrl);
+
+                var onCreatedDate = val.onDatePurchased;
                 var onCreatedDateFinale = new Date(onCreatedDate);
                 onCreatedDateFinale = new Date(onCreatedDateFinale.getTime() + (onCreatedDateFinale.getTimezoneOffset() * 60000));
+                onCreatedDateFinale = onCreatedDateFinale.toLocaleDateString("en-US");
 
                 content += '<tr>';
                 content += '<td><div class="div-image-custom"><img src="' + packageUrlFinale + '"/></div></td>';
-                content += '<td>' + val.pushid + '</td>';
-                content += '<td>' + val.packageid + '</td>';
-                content += '<td>' + val.uid + '</td>';
-                content += '<td>' + val.packagePlace + '</td>';
-                content += '<td>' + val.price + '</td>';
-                content += '<td>' + val.quantity + '</td>';
-                content += '<td>' + onCreatedDateFinale.toLocaleDateString("en-US") + '</td>';
+                content += '<td>' + packageName + '</td>';
+                content += '<td>' + userName + '</td>';
+                content += '<td><div class="div-image-custom"><img src="' + userProfileUrlFinale + '"/></div></td>';
+                content += '<td>' + price.toFixed(2); + '</td>';
+                content += '<td>' + costActivity.toFixed(2); + '</td>';
+                content += '<td>' + costHotel.toFixed(2); + '</td>';
+                content += '<td>' + costTourGuide.toFixed(2); + '</td>';
+                content += '<td>' + serviceTax.toFixed(2); + '</td>';
+                content += '<td>' + serviceCharges.toFixed(2); + '</td>';
+                content += '<td>' + finalCost.toFixed(2); + '</td>';
+                content += '<td>' + onCreatedDateFinale + '</td>';
                 content += '</tr>';
             });
             //Display at package.html
