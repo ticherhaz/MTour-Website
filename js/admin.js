@@ -29,8 +29,7 @@ function displayTableAdmin() {
                 '<th>Email</th>' +
                 '<th>Type</th>' +
                 '<th>Created Date</th>' +
-                '<th>Online</th>' +
-                '<th>Edit</th>';
+                '<th>Online</th>';
             snapshot.forEach(function (childSnapshot) {
                 //Get the value
                 var val = childSnapshot.val();
@@ -39,6 +38,13 @@ function displayTableAdmin() {
                 var onCreatedDate = val.onCreatedDate;
                 var onCreatedDateFinale = new Date(onCreatedDate);
                 onCreatedDateFinale = new Date(onCreatedDateFinale.getTime() + (onCreatedDateFinale.getTimezoneOffset() * 60000));
+                var isOnline;
+
+                if (val.isOnline == true) {
+                    isOnline = "Yes";
+                } else {
+                    isOnline = "No";
+                }
 
                 content += '<tr>';
                 content += '<td><div class="div-image-custom"><img src="' + profileUrlFinale + '"/></div></td>';
@@ -49,8 +55,7 @@ function displayTableAdmin() {
                 content += '<td>' + val.email + '</td>';
                 content += '<td>' + val.type + '</td>';
                 content += '<td>' + onCreatedDateFinale.toLocaleDateString("en-US") + '</td>';
-                content += '<td>' + val.isOnline + '</td>';
-                content += '<td><button  onclick="btnEditOnClick(this)"  type="button" value="' + val.uid + '">Edit</button></td>';
+                content += '<td>' + isOnline + '</td>';
                 content += '</tr>';
 
             });
@@ -117,27 +122,27 @@ function initApp() {
                 //Get the value of type and store in var type.
                 const type = snapshot.val().type;
 
-             //Checking the type
-             if (type === "Owner") {
-                document.getElementById('navLinkSignOut').hidden = false;
-                document.getElementById('navLinkAdmin').hidden = false;
-                document.getElementById('navLinkCustomer').hidden = false;
-                document.getElementById('navLinkPackages').hidden = false;
-                document.getElementById('navLinkTransaction').hidden = false;
-                document.getElementById('navLinkProfitReport').hidden = false;
-            } else if (type === "Customer") {
-                document.getElementById('navLinkSignOut').hidden = false;
-                document.getElementById('navLinkCustomer').hidden = false;
-            } else if (type === "Packages") {
-                document.getElementById('navLinkSignOut').hidden = false;
-                document.getElementById('navLinkPackages').hidden = false;
-            } else if (type === "Profit Report") {
-                document.getElementById('navLinkSignOut').hidden = false;
-                document.getElementById('navLinkProfitReport').hidden = false;
-            } else if (type === "Transaction") {
-                document.getElementById('navLinkSignOut').hidden = false;
-                document.getElementById('navLinkTransaction').hidden = false;
-            }
+                //Checking the type
+                if (type === "Owner") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkAdmin').hidden = false;
+                    document.getElementById('navLinkCustomer').hidden = false;
+                    document.getElementById('navLinkPackages').hidden = false;
+                    document.getElementById('navLinkTransaction').hidden = false;
+                    document.getElementById('navLinkProfitReport').hidden = false;
+                } else if (type === "Customer") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkCustomer').hidden = false;
+                } else if (type === "Packages") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkPackages').hidden = false;
+                } else if (type === "Profit Report") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkProfitReport').hidden = false;
+                } else if (type === "Transaction") {
+                    document.getElementById('navLinkSignOut').hidden = false;
+                    document.getElementById('navLinkTransaction').hidden = false;
+                }
             });
         } else {
             Console.log('User signed out');
